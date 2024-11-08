@@ -40,10 +40,10 @@ public class Test extends JpizeApplication {
         scrollview.add(layout);
 
         for(int i = 0; i < 10; i++)
-            addRecursiveButton(layout);
+            this.addRecursiveButton(layout);
 
         final int links = 5;
-        final float f = 8;
+        final float f = 8F;
         UIComponent prevlink = null;
         for(int i = 0; i < links; i++){
             ImageView chainlink = new ImageView(ctx, Mathc.sin(((float) i / links) * f) * 0.5F + 0.5F, Mathc.sin(((float) i / links + 0.3F) * f) * 0.5F + 0.5F, Mathc.sin(((float) i / links + 0.6F) * f) * 0.5F + 0.5F);
@@ -90,7 +90,7 @@ public class Test extends JpizeApplication {
     float time = 0;
     @Override
     public void render() {
-        System.out.println("FPS: " + Jpize.getFPS());
+        //System.out.println("FPS: " + Jpize.getFPS());
         Gl.clearColorBuffer();
         ctx.render();
 

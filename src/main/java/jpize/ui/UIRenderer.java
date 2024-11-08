@@ -1,18 +1,20 @@
 package jpize.ui;
 
 import jpize.gl.shader.Shader;
-import jpize.gl.texture.TextureBatch;
+import jpize.gl.tesselation.GlScissor;
 import jpize.util.Disposable;
 import jpize.util.camera.OrthographicCamera;
 import jpize.util.color.Color;
 import jpize.util.font.Font;
 import jpize.util.font.FontLoader;
+import jpize.util.mesh.TextureBatch;
 import jpize.util.res.Resource;
 
 public class UIRenderer implements Disposable {
 
     private final OrthographicCamera camera;
     private final TextureBatch batch;
+    private final GlScissor<UIComponent> scissor;
     private final Shader shader;
     private final Font font;
 
@@ -21,9 +23,10 @@ public class UIRenderer implements Disposable {
         this.batch = new TextureBatch();
         this.shader = new Shader(Resource.internal("/shader/ui/ui.vert"), Resource.internal("/shader/ui/ui.frag"));
         this.batch.setShader(shader);
+        this.scissor = new GlScissor<>();
         this.font = FontLoader.loadDefault();
-        this.font.setScale(0.4F);
-        this.font.options().color.set(0F, 0F, 0F);
+        this.font.getRenderOptions().scale().set(0.4F);
+        this.font.getRenderOptions().color().set(0F, 0F, 0F);
     }
 
     public OrthographicCamera camera() {
@@ -32,6 +35,10 @@ public class UIRenderer implements Disposable {
 
     public TextureBatch batch() {
         return batch;
+    }
+
+    public GlScissor<UIComponent> scissor() {
+        return scissor;
     }
 
 

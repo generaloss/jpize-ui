@@ -1,11 +1,7 @@
 package jpize.ui;
 
-import jpize.app.Jpize;
 import jpize.util.function.FloatSupplier;
 import jpize.util.math.vector.Vec2f;
-
-import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class Constraint {
@@ -124,14 +120,14 @@ public class Constraint {
     }
 
 
-    public float solveValue(boolean isX, FloatSupplier relativeWidth, FloatSupplier relativeHeight, Supplier<Vec2f> parentSize, FloatSupplier selfWidth, FloatSupplier selfHeight, FloatSupplier contentSize) {
+    public float solveValue(boolean isX, Supplier<Vec2f> parentSize, FloatSupplier selfWidth, FloatSupplier selfHeight, FloatSupplier contentSize) {
         if(this.isNumber()){
             final Number number = this.asNumber();
             return switch(number.getType()) {
                 case PIXEL              -> number.getValue();
-                case RELATIVE_AUTO      -> number.getValue() * (isX ? relativeWidth.getAsFloat() : relativeHeight.getAsFloat());
-                case RELATIVE_TO_WIDTH  -> number.getValue() * relativeWidth.getAsFloat();
-                case RELATIVE_TO_HEIGHT -> number.getValue() * relativeHeight.getAsFloat();
+                case RELATIVE_AUTO      -> number.getValue() * (isX ? parentSize.get().x : parentSize.get().y);
+                case RELATIVE_TO_WIDTH  -> number.getValue() * parentSize.get().x;
+                case RELATIVE_TO_HEIGHT -> number.getValue() * parentSize.get().y;
                 case ASPECT             -> number.getValue() * (isX ? selfHeight.getAsFloat() : selfWidth.getAsFloat());
             };
         }else{
@@ -141,10 +137,6 @@ public class Constraint {
                 case WRAP_CONTENT -> contentSize.getAsFloat();
             };
         }
-    }
-
-    public float solveValue(boolean isX, Supplier<Vec2f> parentSize, FloatSupplier selfWidth, FloatSupplier selfHeight, FloatSupplier contentSize) {
-        return this.solveValue(isX, Jpize::getWidth, Jpize::getHeight, parentSize, selfWidth, selfHeight, contentSize);
     }
 
 
@@ -188,16 +180,12 @@ public class Constraint {
         return new Constraint.Number(Number.Type.ASPECT, ratio);
     }
 
-    private static Constraint matchParent() {
-        return new Constraint.Flag(Flag.Type.MATCH_PARENT);
-    }
-
     private static Constraint wrapContent() {
         return new Constraint.Flag(Flag.Type.WRAP_CONTENT);
     }
 
-    public static Constraint zero = pixel(0);
-    public static Constraint match_parent = matchParent();
+    public static Constraint zero = pixel(0F);
+    public static Constraint match_parent = rel(1F);
     public static Constraint wrap_content = wrapContent();
 
 }

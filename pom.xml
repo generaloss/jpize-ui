@@ -4,7 +4,7 @@
 
     <groupId>io.github.generaloss</groupId>
     <artifactId>jpize-ui</artifactId>
-    <version>24.9.2.dev02</version>
+    <version>24.11.1-dev01</version>
     <name>jpize-ui</name>
 
     <description>ui library</description>
@@ -103,7 +103,7 @@
         <dependency>
             <groupId>io.github.generaloss</groupId>
             <artifactId>jpize-core</artifactId>
-            <version>24.9.3</version>
+            <version>24.11.1-dev0101</version>
         </dependency>
     </dependencies>
 

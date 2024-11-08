@@ -67,12 +67,12 @@ public class UIComponentState { // calculations class
         updateBackground();
     }
 
-    public void updateParent() {
+    private void updateParent() {
         final UIComponent parent = component.getParent();
         final boolean has_parent = (parent != null);
 
         if(has_parent) {
-            parent_size.set(parent.getState().size());
+            parent_size.set(this.updateParentWidth(parent, Jpize.getWidth()), this.updateParentHeight(parent, Jpize.getHeight()));
             parent_size_paddinged.set(parent.getState().size_paddinged);
             parent_position.set(parent.getState().position());
             parent_padding.set(parent.getState().padding());
@@ -84,6 +84,32 @@ public class UIComponentState { // calculations class
             parent_padding.set(0, 0);
             parent_margin.set(0, 0);
         }
+    }
+
+    private float updateParentWidth(UIComponent parent, float defalut) {
+        if(parent == null)
+            return defalut;
+        if(parent.size().width().isWrapContent())
+            return updateParentWidth(parent.getParent(), defalut);
+        return parent.getState().size().x;
+    }
+
+    //
+    // comp -|
+    //       |- child -|
+    //       |         |- child
+    //       |         |- child
+    //       |
+    //       |- child -|
+    //                 |- child
+    //                 |- child
+
+    private float updateParentHeight(UIComponent parent, float defalut) {
+        if(parent == null)
+            return defalut;
+        if(parent.size().height().isWrapContent())
+            return updateParentHeight(parent.getParent(), defalut);
+        return parent.getState().size().y;
     }
 
     private void updateSize() {
@@ -288,13 +314,11 @@ public class UIComponentState { // calculations class
 
 
     private void updateBackground() {
-
         // corners
         final Constraint[] constraints = component.background().roundCornerConstraints();
         for(int i = 0; i < 4; i++){
             round_corners[i] = constraints[i].solveValue(false,
-                size::getX, size::getY,
-                () -> parent_size,
+                () -> size,
                 size::getX, size::getY,
                 () -> (size.minComp() * 0.5F)
             );
@@ -302,8 +326,7 @@ public class UIComponentState { // calculations class
 
         // border
         border_width = component.background().getBorderWidth().solveValue(false,
-            size::getX, size::getY,
-            () -> parent_size,
+            () -> size,
             size::getX, size::getY,
             () -> (size.minComp() * 0.5F)
         );
