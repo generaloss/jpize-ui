@@ -120,7 +120,7 @@ public class Constraint {
     }
 
 
-    public float solveValue(boolean isX, Supplier<Vec2f> parentSize, FloatSupplier selfWidth, FloatSupplier selfHeight, FloatSupplier contentSize) {
+    public float getInPixels(boolean isX, Supplier<Vec2f> parentSize, FloatSupplier selfWidth, FloatSupplier selfHeight, FloatSupplier contentSize) {
         if(this.isNumber()){
             final Number number = this.asNumber();
             return switch(number.getType()) {

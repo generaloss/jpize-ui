@@ -60,11 +60,11 @@ public class UIComponentState { // calculations class
             update_request = false;
         }
         // update
-        updateParent();
-        updateSize();
-        updateMarginAndPadding();
-        updatePosition();
-        updateBackground();
+        this.updateParent();
+        this.updateSize();
+        this.updateMarginAndPadding();
+        this.updatePosition();
+        this.updateBackground();
     }
 
     private void updateParent() {
@@ -90,25 +90,15 @@ public class UIComponentState { // calculations class
         if(parent == null)
             return defalut;
         if(parent.size().width().isWrapContent())
-            return updateParentWidth(parent.getParent(), defalut);
+            return this.updateParentWidth(parent.getParent(), defalut);
         return parent.getState().size().x;
     }
-
-    //
-    // comp -|
-    //       |- child -|
-    //       |         |- child
-    //       |         |- child
-    //       |
-    //       |- child -|
-    //                 |- child
-    //                 |- child
 
     private float updateParentHeight(UIComponent parent, float defalut) {
         if(parent == null)
             return defalut;
         if(parent.size().height().isWrapContent())
-            return updateParentHeight(parent.getParent(), defalut);
+            return this.updateParentHeight(parent.getParent(), defalut);
         return parent.getState().size().y;
     }
 
@@ -119,11 +109,11 @@ public class UIComponentState { // calculations class
         // width
         final boolean width_type_is_aspect = width.isAspect();
         if(width_type_is_aspect){
-            updateSizeY(height);
+            this.updateSizeY(height);
             size.x = width.asNumber().getValue() * size.y;
         }else{
-            size.x = width.solveValue(true, () -> parent_size, size::getX, size::getY, () -> {
-                calculateContentSize();
+            size.x = width.getInPixels(true, () -> parent_size, size::getX, size::getY, () -> {
+                this.calculateContentSize();
                 return content_size.x;
             });
         }
@@ -133,14 +123,17 @@ public class UIComponentState { // calculations class
 
         // height
         if(!width_type_is_aspect)
-            updateSizeY(height);
+            this.updateSizeY(height);
     }
 
     private void updateSizeY(Constraint height) {
         if(height.isAspect()){
             size.y = height.asNumber().getValue() * size.x;
         }else{
-            size.y = height.solveValue(false, () -> parent_size, size::getX, size::getY, () -> { calculateContentSize(); return content_size.y; });
+            size.y = height.getInPixels(false, () -> parent_size, size::getX, size::getY, () -> {
+                this.calculateContentSize();
+                return content_size.y;
+            });
         }
 
         //! scale height
@@ -160,11 +153,11 @@ public class UIComponentState { // calculations class
         };
         // iterate children
         if(component instanceof VBox vbox){
-            getMinmax(vbox.getChildren().iterator().next(), minmax);
-            getMinmax(vbox.getLast(), minmax);
+            this.getMinmax(vbox.getChildren().iterator().next(), minmax);
+            this.getMinmax(vbox.getLast(), minmax);
         }else{
             for(UIComponent child: component.getChildren())
-                getMinmax(child, minmax);
+                this.getMinmax(child, minmax);
         }
         // set content size
         content_size.set((minmax[1] - minmax[0]), (minmax[3] - minmax[2]));
@@ -183,49 +176,41 @@ public class UIComponentState { // calculations class
         minmax[3] = Math.max(minmax[3], minY + state.size.y);
         // iterate children
         for(UIComponent child: component.getChildren())
-            getMinmax(child, minmax);
+            this.getMinmax(child, minmax);
     }
 
 
     private void updateMarginAndPadding() {
-        padding.top    = component.padding().top()   .solveValue(false, () -> parent_size, size::getX, size::getY, () -> 0F);
-        padding.left   = component.padding().left()  .solveValue(true , () -> parent_size, size::getX, size::getY, () -> 0F);
-        padding.bottom = component.padding().bottom().solveValue(false, () -> parent_size, size::getX, size::getY, () -> 0F);
-        padding.right  = component.padding().right() .solveValue(true , () -> parent_size, size::getX, size::getY, () -> 0F);
+        padding.top    = component.padding().top()   .getInPixels(false, () -> parent_size, size::getX, size::getY, () -> 0F);
+        padding.left   = component.padding().left()  .getInPixels(true , () -> parent_size, size::getX, size::getY, () -> 0F);
+        padding.bottom = component.padding().bottom().getInPixels(false, () -> parent_size, size::getX, size::getY, () -> 0F);
+        padding.right  = component.padding().right() .getInPixels(true , () -> parent_size, size::getX, size::getY, () -> 0F);
 
-        margin.top    = component.margin().top()   .solveValue(false, () -> parent_size, size::getX, size::getY, () -> 0F);
-        margin.left   = component.margin().left()  .solveValue(true , () -> parent_size, size::getX, size::getY, () -> 0F);
-        margin.bottom = component.margin().bottom().solveValue(false, () -> parent_size, size::getX, size::getY, () -> 0F);
-        margin.right  = component.margin().right() .solveValue(true , () -> parent_size, size::getX, size::getY, () -> 0F);
+        margin.top    = component.margin().top()   .getInPixels(false, () -> parent_size, size::getX, size::getY, () -> 0F);
+        margin.left   = component.margin().left()  .getInPixels(true , () -> parent_size, size::getX, size::getY, () -> 0F);
+        margin.bottom = component.margin().bottom().getInPixels(false, () -> parent_size, size::getX, size::getY, () -> 0F);
+        margin.right  = component.margin().right() .getInPixels(true , () -> parent_size, size::getX, size::getY, () -> 0F);
 
         size_paddinged.set(size).sub(padding.left, padding.bottom).sub(padding.right, padding.top);
     }
 
-    public boolean has_bind_top;    //! temporary
-    public boolean has_bind_left;   //! temporary
-    public boolean has_bind_bottom; //! temporary
-    public boolean has_bind_right;  //! temporary
-    public float bind_top;          //! temporary
-    public float bind_left;         //! temporary
-    public float bind_bottom;       //! temporary
-    public float bind_right;        //! temporary
 
     private void updatePosition() {
         // bindings
-        has_bind_top    = (!component.bindings().top()   .directory().isNone() && component.bindings().top()   .directory().isAxisY());
-        has_bind_left   = (!component.bindings().left()  .directory().isNone() && component.bindings().left()  .directory().isAxisX());
-        has_bind_bottom = (!component.bindings().bottom().directory().isNone() && component.bindings().bottom().directory().isAxisY());
-        has_bind_right  = (!component.bindings().right() .directory().isNone() && component.bindings().right() .directory().isAxisX());
+        final boolean has_bind_top    = (!component.bindings().top()   .directory().isNone() && component.bindings().top()   .directory().isAxisY());
+        final boolean has_bind_left   = (!component.bindings().left()  .directory().isNone() && component.bindings().left()  .directory().isAxisX());
+        final boolean has_bind_bottom = (!component.bindings().bottom().directory().isNone() && component.bindings().bottom().directory().isAxisY());
+        final boolean has_bind_right  = (!component.bindings().right() .directory().isNone() && component.bindings().right() .directory().isAxisX());
 
-        bind_top    = (!has_bind_top    ? 0F : updateBind(UIDir.TOP   , component.bindings().top()   )) - size.y;
-        bind_left   = (!has_bind_left   ? 0F : updateBind(UIDir.LEFT  , component.bindings().left()  ));
-        bind_bottom = (!has_bind_bottom ? 0F : updateBind(UIDir.BOTTOM, component.bindings().bottom()));
-        bind_right  = (!has_bind_right  ? 0F : updateBind(UIDir.RIGHT , component.bindings().right() )) - size.x;
+        final float bind_top    = (!has_bind_top    ? 0F : this.updateBind(UIDir.TOP   , component.bindings().top()   )) - size.y;
+        final float bind_left   = (!has_bind_left   ? 0F : this.updateBind(UIDir.LEFT  , component.bindings().left()  ));
+        final float bind_bottom = (!has_bind_bottom ? 0F : this.updateBind(UIDir.BOTTOM, component.bindings().bottom()));
+        final float bind_right  = (!has_bind_right  ? 0F : this.updateBind(UIDir.RIGHT , component.bindings().right() )) - size.x;
 
         final Vec2f bias = component.bindings().bias();
         // x
         if(has_bind_left && has_bind_right) {
-            position.x = (bind_left * bias.x + bind_right * (1 - bias.x));
+            position.x = (bind_left * bias.x + bind_right * (1F - bias.x));
         }else if(has_bind_left) {
             position.x = bind_left;
         }else if(has_bind_right) {
@@ -235,7 +220,7 @@ public class UIComponentState { // calculations class
         }
         // y
         if(has_bind_bottom && has_bind_top) {
-            position.y = bind_top * bias.y + bind_bottom * (1 - bias.y);
+            position.y = bind_top * bias.y + bind_bottom * (1F - bias.y);
         }else if(has_bind_bottom) {
             position.y = bind_bottom;
         }else if(has_bind_top) {
@@ -317,7 +302,7 @@ public class UIComponentState { // calculations class
         // corners
         final Constraint[] constraints = component.background().roundCornerConstraints();
         for(int i = 0; i < 4; i++){
-            round_corners[i] = constraints[i].solveValue(false,
+            round_corners[i] = constraints[i].getInPixels(false,
                 () -> size,
                 size::getX, size::getY,
                 () -> (size.minComp() * 0.5F)
@@ -325,7 +310,7 @@ public class UIComponentState { // calculations class
         }
 
         // border
-        border_width = component.background().getBorderWidth().solveValue(false,
+        border_width = component.background().getBorderWidth().getInPixels(false,
             () -> size,
             size::getX, size::getY,
             () -> (size.minComp() * 0.5F)
@@ -340,7 +325,7 @@ public class UIComponentState { // calculations class
     }
 
     public boolean isPointOnComponent(Vec2f point) {
-        return isPointOnComponent(point.x, point.y);
+        return this.isPointOnComponent(point.x, point.y);
     }
 
 
