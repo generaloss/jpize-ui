@@ -103,7 +103,7 @@
         <dependency>
             <groupId>io.github.generaloss</groupId>
             <artifactId>jpize-core</artifactId>
-            <version>24.11.1-dev0101</version>
+            <version>24.12.2</version>
         </dependency>
     </dependencies>
 

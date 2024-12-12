@@ -6,7 +6,6 @@ import jpize.util.Disposable;
 import jpize.util.camera.OrthographicCamera;
 import jpize.util.color.Color;
 import jpize.util.font.Font;
-import jpize.util.font.FontLoader;
 import jpize.util.mesh.TextureBatch;
 import jpize.util.res.Resource;
 
@@ -24,7 +23,7 @@ public class UIRenderer implements Disposable {
         this.shader = new Shader(Resource.internal("/shader/ui/ui.vert"), Resource.internal("/shader/ui/ui.frag"));
         this.batch.setShader(shader);
         this.scissor = new GlScissor<>();
-        this.font = FontLoader.loadDefault();
+        this.font = new Font().loadDefault();
         this.font.getRenderOptions().scale().set(0.4F);
         this.font.getRenderOptions().color().set(0F, 0F, 0F);
     }

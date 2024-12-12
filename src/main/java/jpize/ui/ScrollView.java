@@ -37,9 +37,9 @@ public class ScrollView extends UIComponent {
     @Override
     protected void onUpdate() {
         // scrollable component
-        final UIComponent scrollable_component = getChildren().iterator().next();
-        if(scrollable_component == null)
+        if(!getChildren().iterator().hasNext())
             return;
+        final UIComponent scrollable_component = getChildren().iterator().next();
 
         final UIComponentState view_state = super.getState();
         final UIComponentState scrollable_state = scrollable_component.getState();
@@ -72,7 +72,7 @@ public class ScrollView extends UIComponent {
         // interpolate
         final Vec2f step = scroll_point.copy().sub(scroll_position);
         if(!step.isZero()){
-            scroll_position.add(step.mul(Jpize.getDT() * 10));
+            scroll_position.add(step.mul(Jpize.getDeltaTime() * 10));
         }
 
         // set
@@ -150,6 +150,9 @@ public class ScrollView extends UIComponent {
 
     @Override
     protected void onRenderBegin(UIRenderer renderer) {
+        if(!getChildren().iterator().hasNext())
+            return;
+
         final UIComponentState state = super.getState();
 
         renderer.batch().render();
@@ -158,17 +161,15 @@ public class ScrollView extends UIComponent {
 
         // hide
         final UIComponent scrollable = getChildren().iterator().next();
-        if(scrollable != null){
-            scrollable.foreach((component) -> {
-                final UIComponentState comp_state = component.getState();
-                component.setVisibility(
-                    (comp_state.position().y + comp_state.size().y) > state.position().y &&
-                    (comp_state.position().y) < (state.position().y + state.size().y) &&
-                    (comp_state.position().x + comp_state.size().x) > state.position().x &&
-                    (comp_state.position().x) < (state.position().x + state.size().x)
-                );
-            });
-        }
+        scrollable.foreach((component) -> {
+            final UIComponentState comp_state = component.getState();
+            component.setVisibility(
+                (comp_state.position().y + comp_state.size().y) > state.position().y &&
+                (comp_state.position().y) < (state.position().y + state.size().y) &&
+                (comp_state.position().x + comp_state.size().x) > state.position().x &&
+                (comp_state.position().x) < (state.position().x + state.size().x)
+            );
+        });
     }
 
     @Override

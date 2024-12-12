@@ -161,6 +161,8 @@ public class UIComponentState { // calculations class
         }
         // set content size
         content_size.set((minmax[1] - minmax[0]), (minmax[3] - minmax[2]));
+        size.set((minmax[1] - minmax[0]), (minmax[3] - minmax[2]));
+        size_paddinged.set((minmax[1] - minmax[0]), (minmax[3] - minmax[2]));
     }
 
     private void getMinmax(UIComponent component, float[] minmax) {

@@ -55,16 +55,16 @@ public class UIBackground {
         return round;
     }
 
-    public UIBackground roundCorner(UICornerDir dir, Constraint radius) {
+    public UIBackground roundCorner(UICorner dir, Constraint radius) {
         round[dir.ordinal()] = radius;
         return this;
     }
 
     public UIBackground roundCorners(Constraint radiusLT, Constraint radiusLB, Constraint radiusRB, Constraint radiusRT) {
-        round[UICornerDir.LEFT_TOP    .ordinal()] = radiusLT;
-        round[UICornerDir.LEFT_BOTTOM .ordinal()] = radiusLB;
-        round[UICornerDir.RIGHT_BOTTOM.ordinal()] = radiusRB;
-        round[UICornerDir.RIGHT_TOP   .ordinal()] = radiusRT;
+        round[UICorner.LEFT_TOP    .ordinal()] = radiusLT;
+        round[UICorner.LEFT_BOTTOM .ordinal()] = radiusLB;
+        round[UICorner.RIGHT_BOTTOM.ordinal()] = radiusRB;
+        round[UICorner.RIGHT_TOP   .ordinal()] = radiusRT;
         return this;
     }
 
@@ -73,19 +73,19 @@ public class UIBackground {
     }
 
     public UIBackground roundCornerLeftTop(Constraint radius) {
-        return this.roundCorner(UICornerDir.LEFT_TOP, radius);
+        return this.roundCorner(UICorner.LEFT_TOP, radius);
     }
 
     public UIBackground roundCornerLeftBottom(Constraint radius) {
-        return this.roundCorner(UICornerDir.LEFT_BOTTOM, radius);
+        return this.roundCorner(UICorner.LEFT_BOTTOM, radius);
     }
 
     public UIBackground roundCornerRightBottom(Constraint radius) {
-        return this.roundCorner(UICornerDir.RIGHT_BOTTOM, radius);
+        return this.roundCorner(UICorner.RIGHT_BOTTOM, radius);
     }
 
     public UIBackground roundCornerRightTop(Constraint radius) {
-        return this.roundCorner(UICornerDir.RIGHT_TOP, radius);
+        return this.roundCorner(UICorner.RIGHT_TOP, radius);
     }
 
 

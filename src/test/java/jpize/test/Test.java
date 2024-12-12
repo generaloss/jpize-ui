@@ -18,13 +18,13 @@ public class Test extends JpizeApplication {
     public void init() {
         Gl.clearColor(0.3, 0.3, 0.3);
 
-        ImageView root = new ImageView(ctx, "/background.png", 0.5F);
+        final ImageView root = new ImageView(ctx, "/background.png", 0.5F);
         ctx.setRoot(root);
         root.setID("root");
         root.size().set(Constraint.match_parent, Constraint.match_parent);
         root.margin().set(Constraint.pixel(50));
 
-        ScrollView scrollview = new ScrollView(ctx);
+        final ScrollView scrollview = new ScrollView(ctx);
         root.add(scrollview);
         scrollview.setID("scrollview");
         scrollview.size().set(Constraint.aspect(0.7), Constraint.rel(0.75));
@@ -33,20 +33,20 @@ public class Test extends JpizeApplication {
         scrollview.background().roundCorners(Constraint.pixel(30));
         scrollview.background().setBorderWidth(Constraint.pixel(0));
 
-        VBox layout = new VBox(ctx);
-        layout.size().set(Constraint.wrap_content, Constraint.wrap_content);
-        layout.bindings().left().set(UIDir.LEFT);
-        layout.bindings().right().set(UIDir.RIGHT);
-        scrollview.add(layout);
+        final VBox buttonLayout = new VBox(ctx);
+        buttonLayout.size().set(Constraint.rel(1F), Constraint.wrap_content);
+        buttonLayout.bindings().left().set(UIDir.LEFT);
+        buttonLayout.bindings().right().set(UIDir.RIGHT);
+        scrollview.add(buttonLayout);
 
         for(int i = 0; i < 10; i++)
-            this.addRecursiveButton(layout);
+            this.addRecursiveButton(buttonLayout);
 
         final int links = 5;
         final float f = 8F;
         UIComponent prevlink = null;
         for(int i = 0; i < links; i++){
-            ImageView chainlink = new ImageView(ctx, Mathc.sin(((float) i / links) * f) * 0.5F + 0.5F, Mathc.sin(((float) i / links + 0.3F) * f) * 0.5F + 0.5F, Mathc.sin(((float) i / links + 0.6F) * f) * 0.5F + 0.5F);
+            final ImageView chainlink = new ImageView(ctx, Mathc.sin(((float) i / links) * f) * 0.5F + 0.5F, Mathc.sin(((float) i / links + 0.3F) * f) * 0.5F + 0.5F, Mathc.sin(((float) i / links + 0.6F) * f) * 0.5F + 0.5F);
             root.add(chainlink);
             chainlink.setID("chainlink_" + i);
             chainlink.size().set(Constraint.pixel(50), Constraint.pixel(50));
@@ -67,22 +67,26 @@ public class Test extends JpizeApplication {
         Glfw.enableVSync(false);
     }
 
-    Texture2D button1 = new Texture2D("/button1.png");
-    Texture2D button2 = new Texture2D("/button2.png");
-    Texture2D button3 = new Texture2D("/button3.png");
+    final Texture2D button1 = new Texture2D("/button1.png");
+    final Texture2D button2 = new Texture2D("/button2.png");
+    final Texture2D button3 = new Texture2D("/button3.png");
     int item_number = 1;
     private void addRecursiveButton(UIComponent layout) {
-        ImageView item = new ImageView(ctx, button1, 0.9F);
+        final ImageView item = new ImageView(ctx, button1, 0.9F);
         layout.add(item);
         item.setID("item_" + item_number);
         item.size().set(Constraint.relh(0.45), Constraint.aspect(0.3));
+        item.bindings().left().set(UIDir.LEFT);
         item.margin().setBottom(Constraint.rel(0.005));
+
+        // input
         item.callbacks().addOnHover((component, hovered) -> component.background().setImage(hovered ? button2 : button1));
         item.callbacks().addOnClick((component, clicked) -> component.background().setImage(button3));
         item.callbacks().addOnRelease((component, clicked, onComponent) -> {
             component.background().setImage(button2);
             addRecursiveButton(layout);
         });
+
         item_number++;
     }
 

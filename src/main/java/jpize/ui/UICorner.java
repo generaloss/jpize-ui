@@ -1,6 +1,6 @@
 package jpize.ui;
 
-public enum UICornerDir {
+public enum UICorner {
 
     LEFT_TOP,
     LEFT_BOTTOM,
