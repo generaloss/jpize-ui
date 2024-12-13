@@ -1,4 +1,8 @@
-package jpize.ui;
+package jpize.ui.palette;
+
+import jpize.ui.component.UIComponent;
+import jpize.ui.component.UIContext;
+import jpize.ui.common.UIDir;
 
 public class VBox extends UIComponent {
 

@@ -1,6 +1,8 @@
-package jpize.ui;
+package jpize.ui.component;
 
 import jpize.gl.texture.Texture2D;
+import jpize.ui.common.Constraint;
+import jpize.ui.common.UICorner;
 import jpize.util.color.Color;
 import jpize.util.pixmap.Pixmap;
 import jpize.util.region.TextureRegion;
@@ -11,16 +13,16 @@ public class UIBackground {
 
     private TextureRegion image;
     private final Color color;
-    private final Constraint[] round;
-    private Constraint borderWidth;
+    private final Constraint[] corners_radius;
+    private Constraint borders_width;
     private final Color borderColor;
 
     public UIBackground() {
-        this.color = new Color(); //! default color
-        this.round = new Constraint[4];
-        Arrays.fill(round, Constraint.zero);
-        this.borderWidth = Constraint.zero;
-        this.borderColor = new Color(); //! default border color
+        this.color = new Color(0.2, 0.21, 0.24); //! default color
+        this.corners_radius = new Constraint[4];
+        Arrays.fill(corners_radius, Constraint.zero);
+        this.borders_width = Constraint.pixel(2);
+        this.borderColor = new Color(0.1, 0.11, 0.15); //! default border color
     }
 
 
@@ -52,19 +54,19 @@ public class UIBackground {
 
 
     public Constraint[] roundCornerConstraints() {
-        return round;
+        return corners_radius;
     }
 
     public UIBackground roundCorner(UICorner dir, Constraint radius) {
-        round[dir.ordinal()] = radius;
+        corners_radius[dir.ordinal()] = radius;
         return this;
     }
 
     public UIBackground roundCorners(Constraint radiusLT, Constraint radiusLB, Constraint radiusRB, Constraint radiusRT) {
-        round[UICorner.LEFT_TOP    .ordinal()] = radiusLT;
-        round[UICorner.LEFT_BOTTOM .ordinal()] = radiusLB;
-        round[UICorner.RIGHT_BOTTOM.ordinal()] = radiusRB;
-        round[UICorner.RIGHT_TOP   .ordinal()] = radiusRT;
+        corners_radius[UICorner.LEFT_TOP    .ordinal()] = radiusLT;
+        corners_radius[UICorner.LEFT_BOTTOM .ordinal()] = radiusLB;
+        corners_radius[UICorner.RIGHT_BOTTOM.ordinal()] = radiusRB;
+        corners_radius[UICorner.RIGHT_TOP   .ordinal()] = radiusRT;
         return this;
     }
 
@@ -90,11 +92,11 @@ public class UIBackground {
 
 
     public Constraint getBorderWidth() {
-        return borderWidth;
+        return borders_width;
     }
 
     public UIBackground setBorderWidth(Constraint borderWidth) {
-        this.borderWidth = borderWidth;
+        this.borders_width = borderWidth;
         return this;
     }
 

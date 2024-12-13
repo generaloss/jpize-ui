@@ -1,4 +1,6 @@
-package jpize.ui;
+package jpize.ui.common;
+
+import jpize.ui.component.UIComponent;
 
 public class UIBind {
 

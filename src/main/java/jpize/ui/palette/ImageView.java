@@ -1,6 +1,8 @@
-package jpize.ui;
+package jpize.ui.palette;
 
 import jpize.gl.texture.Texture2D;
+import jpize.ui.component.UIComponent;
+import jpize.ui.component.UIContext;
 import jpize.util.color.Color;
 import jpize.util.pixmap.Pixmap;
 import jpize.util.region.TextureRegion;

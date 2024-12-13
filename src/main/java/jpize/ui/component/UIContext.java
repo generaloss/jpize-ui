@@ -1,4 +1,4 @@
-package jpize.ui;
+package jpize.ui.component;
 
 import jpize.app.Jpize;
 import jpize.glfw.callback.GlfwMouseButtonCallback;

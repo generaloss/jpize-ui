@@ -1,4 +1,4 @@
-package jpize.ui;
+package jpize.ui.common;
 
 import jpize.util.math.vector.Vec2f;
 

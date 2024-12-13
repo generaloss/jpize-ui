@@ -1,4 +1,4 @@
-package jpize.ui;
+package jpize.ui.component;
 
 import jpize.gl.shader.Shader;
 import jpize.gl.tesselation.GlScissor;

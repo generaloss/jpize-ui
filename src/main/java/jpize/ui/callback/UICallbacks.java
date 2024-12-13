@@ -1,6 +1,7 @@
-package jpize.ui;
+package jpize.ui.callback;
 
 import jpize.glfw.input.MouseBtn;
+import jpize.ui.component.UIComponent;
 
 import java.util.ArrayList;
 import java.util.List;

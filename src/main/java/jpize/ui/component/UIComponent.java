@@ -1,5 +1,9 @@
-package jpize.ui;
+package jpize.ui.component;
 
+import jpize.ui.callback.UICallbacks;
+import jpize.ui.common.UIBindInsets;
+import jpize.ui.common.UIDimensions;
+import jpize.ui.common.UIInsets;
 import jpize.util.math.vector.Vec2f;
 
 import java.util.ArrayList;

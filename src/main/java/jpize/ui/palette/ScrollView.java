@@ -1,7 +1,12 @@
-package jpize.ui;
+package jpize.ui.palette;
 
 import jpize.app.Jpize;
 import jpize.glfw.input.Key;
+import jpize.ui.component.UIComponent;
+import jpize.ui.component.UIComponentState;
+import jpize.ui.component.UIContext;
+import jpize.ui.component.UIRenderer;
+import jpize.ui.common.UIDir;
 import jpize.util.math.vector.Vec2f;
 
 public class ScrollView extends UIComponent {

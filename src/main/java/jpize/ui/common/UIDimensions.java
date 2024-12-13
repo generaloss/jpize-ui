@@ -1,4 +1,4 @@
-package jpize.ui;
+package jpize.ui.common;
 
 public class UIDimensions {
 

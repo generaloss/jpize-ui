@@ -1,12 +1,12 @@
-package jpize.ui;
+package jpize.ui.common;
 
 public enum UIDir {
 
     NONE   (false),
     TOP    (false),
-    LEFT   (true),
+    LEFT   (true ),
     BOTTOM (false),
-    RIGHT  (true);
+    RIGHT  (true );
 
 
     private final boolean axisX;

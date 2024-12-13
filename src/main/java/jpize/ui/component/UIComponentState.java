@@ -1,6 +1,10 @@
-package jpize.ui;
+package jpize.ui.component;
 
 import jpize.app.Jpize;
+import jpize.ui.common.Constraint;
+import jpize.ui.common.UIBind;
+import jpize.ui.common.UIDir;
+import jpize.ui.palette.VBox;
 import jpize.util.Insets;
 import jpize.util.math.Intersector;
 import jpize.util.math.vector.Vec2f;

@@ -7,18 +7,28 @@ import jpize.gl.texture.Texture2D;
 import jpize.glfw.Glfw;
 import jpize.glfw.init.GlfwPlatform;
 import jpize.glfw.input.Key;
-import jpize.ui.*;
+import jpize.ui.common.Constraint;
+import jpize.ui.common.UIDir;
+import jpize.ui.component.UIComponent;
+import jpize.ui.component.UIContext;
+import jpize.ui.io.UILoader;
+import jpize.ui.palette.ImageView;
+import jpize.ui.palette.ScrollView;
+import jpize.ui.palette.VBox;
 import jpize.util.math.Mathc;
 
 public class Test extends JpizeApplication {
 
-    private final UIContext ctx = new UIContext().enable();
+    private final UIContext ctx = new UILoader()
+            .load("/uiml.xml")
+            .createContext()
+            .enable();
 
     @Override
     public void init() {
         Gl.clearColor(0.3, 0.3, 0.3);
 
-        final ImageView root = new ImageView(ctx, "/background.png", 0.5F);
+        final ImageView root = new ImageView(ctx, "/background.png", 0.2F);
         ctx.setRoot(root);
         root.setID("root");
         root.size().set(Constraint.match_parent, Constraint.match_parent);
@@ -31,10 +41,9 @@ public class Test extends JpizeApplication {
         scrollview.background().color().set(1, 1, 1, 0.5);
         scrollview.bindings().toCenter();
         scrollview.background().roundCorners(Constraint.pixel(30));
-        scrollview.background().setBorderWidth(Constraint.pixel(0));
 
         final VBox buttonLayout = new VBox(ctx);
-        buttonLayout.size().set(Constraint.rel(1F), Constraint.wrap_content);
+        buttonLayout.size().set(Constraint.rel(0.8F), Constraint.rel(1F));
         buttonLayout.bindings().left().set(UIDir.LEFT);
         buttonLayout.bindings().right().set(UIDir.RIGHT);
         scrollview.add(buttonLayout);
