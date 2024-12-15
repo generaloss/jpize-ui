@@ -1,0 +1,23 @@
+
+<ImageView id="root"
+           image="internal:/background.png"
+           color.a="0.5"
+           size="match_parent"
+           margin="50px" >
+
+    <ScrollView id="scrollview"
+                color="1, 1, 1, 0.5"
+                corners="3%rel"
+                size="70%asp, 75%rel"
+                bindings="center">
+
+        <VBox id="button_layout"
+              size="80%rel, 100%rel"
+              bindings.left="left"
+              bindings.right="right">
+
+        </VBox>
+
+    </ScrollView>
+
+</ImageView>

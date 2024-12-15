@@ -64,21 +64,17 @@ public class UIRenderer implements Disposable {
             final float width = state.size().x;
             final float height = state.size().y;
 
+            final UIDrawable background = component.background();
             final float[] roundCorners = state.roundCorners();
             final float borderWidth = state.borderWidth();
 
-            final UIBackground background = component.background();
-            final Color borderColor = background.borderColor();
-
             // shader
-            this.beginRect(x, y, width, height, roundCorners, borderWidth, borderColor);
+            this.beginRect(x, y, width, height, roundCorners, borderWidth, component.borderColor());
+
             // render
-            if(background.image() != null){
-                batch.setColor(background.color());
-                batch.draw(background.image(), x, y, width, height);
-            }else{
-                batch.drawRect(x, y, width, height, background.color());
-            }
+            if(background != null)
+                background.draw(this, x, y, width, height);
+
             batch.render();
             component.onRenderBegin(this);
             if(component.getID() != null)

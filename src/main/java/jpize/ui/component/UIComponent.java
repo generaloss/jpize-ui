@@ -1,9 +1,8 @@
 package jpize.ui.component;
 
 import jpize.ui.callback.UICallbacks;
-import jpize.ui.common.UIBindInsets;
-import jpize.ui.common.UIDimensions;
-import jpize.ui.common.UIInsets;
+import jpize.ui.common.*;
+import jpize.util.color.Color;
 import jpize.util.math.vector.Vec2f;
 
 import java.util.ArrayList;
@@ -23,8 +22,12 @@ public abstract class UIComponent {
     private final UIBindInsets bindings;
     private final UIInsets margin;
     private final UIInsets padding;
+    private final UICorners corners;
 
-    private final UIBackground background;
+    private UIDrawable background;
+    private Constraint borders_width;
+    private final Color borderColor;
+
     private boolean visibility;
     private boolean hoverable;
 
@@ -39,7 +42,9 @@ public abstract class UIComponent {
         this.bindings = new UIBindInsets();
         this.margin = new UIInsets();
         this.padding = new UIInsets();
-        this.background = new UIBackground();
+        this.corners = new UICorners();
+        this.borders_width = Constraint.pixel(2);
+        this.borderColor = new Color(0.1, 0.11, 0.15); //! default border color
         this.visibility = true;
         this.hoverable = true;
         this.callbacks = new UICallbacks(this);
@@ -89,19 +94,20 @@ public abstract class UIComponent {
         this.foreach(this, action);
     }
 
-    public <T extends UIComponent> T get(String ID) {
-        for(UIComponent child: children)
+    public <C extends UIComponent> C get(String ID) {
+        for(UIComponent child: children){
+            System.out.println(child.ID + " : " + ID + " : " + ID.equals(child.ID));
             if(ID.equals(child.ID))
                 // noinspection unchecked
-                return (T) child;
+                return (C) child;}
         return null;
     }
 
-    public <T extends UIComponent> T findByID(String ID) {
-        T found = this.get(ID);
+    public <C extends UIComponent> C findByID(String ID) {
+        final C found = this.get(ID);
         if(found == null)
             for(UIComponent child: children)
-                child.findByID(ID);
+                return child.findByID(ID);
         return found;
     }
 
@@ -149,8 +155,32 @@ public abstract class UIComponent {
         return padding;
     }
 
-    public UIBackground background() {
+    public UICorners corners() {
+        return corners;
+    }
+
+
+    public UIDrawable background() {
         return background;
+    }
+
+    public UIComponent setBackground(UIDrawable background) {
+        this.background = background;
+        return this;
+    }
+
+
+    public Constraint getBorderWidth() {
+        return borders_width;
+    }
+
+    public UIComponent setBorderWidth(Constraint borderWidth) {
+        this.borders_width = borderWidth;
+        return this;
+    }
+
+    public Color borderColor() {
+        return borderColor;
     }
 
 

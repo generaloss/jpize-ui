@@ -11,16 +11,15 @@ import jpize.ui.common.Constraint;
 import jpize.ui.common.UIDir;
 import jpize.ui.component.UIComponent;
 import jpize.ui.component.UIContext;
-import jpize.ui.io.UILoader;
+import jpize.ui.loader.UILoader;
 import jpize.ui.palette.ImageView;
-import jpize.ui.palette.ScrollView;
 import jpize.ui.palette.VBox;
 import jpize.util.math.Mathc;
 
 public class Test extends JpizeApplication {
 
     private final UIContext ctx = new UILoader()
-            .load("/uiml.xml")
+            .load("/test.xml")
             .createContext()
             .enable();
 
@@ -28,25 +27,8 @@ public class Test extends JpizeApplication {
     public void init() {
         Gl.clearColor(0.3, 0.3, 0.3);
 
-        final ImageView root = new ImageView(ctx, "/background.png", 0.2F);
-        ctx.setRoot(root);
-        root.setID("root");
-        root.size().set(Constraint.match_parent, Constraint.match_parent);
-        root.margin().set(Constraint.pixel(50));
-
-        final ScrollView scrollview = new ScrollView(ctx);
-        root.add(scrollview);
-        scrollview.setID("scrollview");
-        scrollview.size().set(Constraint.aspect(0.7), Constraint.rel(0.75));
-        scrollview.background().color().set(1, 1, 1, 0.5);
-        scrollview.bindings().toCenter();
-        scrollview.background().roundCorners(Constraint.pixel(30));
-
-        final VBox buttonLayout = new VBox(ctx);
-        buttonLayout.size().set(Constraint.rel(0.8F), Constraint.rel(1F));
-        buttonLayout.bindings().left().set(UIDir.LEFT);
-        buttonLayout.bindings().right().set(UIDir.RIGHT);
-        scrollview.add(buttonLayout);
+        final ImageView root = ctx.findByID("root");
+        final VBox buttonLayout = ctx.findByID("button_layout");
 
         for(int i = 0; i < 10; i++)
             this.addRecursiveButton(buttonLayout);
@@ -89,11 +71,11 @@ public class Test extends JpizeApplication {
         item.margin().setBottom(Constraint.rel(0.005));
 
         // input
-        item.callbacks().addOnHover((component, hovered) -> component.background().setImage(hovered ? button2 : button1));
-        item.callbacks().addOnClick((component, clicked) -> component.background().setImage(button3));
+        item.callbacks().addOnHover((component, hovered) -> ((ImageView) component).background().setImage(hovered ? button2 : button1));
+        item.callbacks().addOnClick((component, clicked) -> ((ImageView) component).background().setImage(button3));
         item.callbacks().addOnRelease((component, clicked, onComponent) -> {
-            component.background().setImage(button2);
-            addRecursiveButton(layout);
+            ((ImageView) component).background().setImage(button2);
+            this.addRecursiveButton(layout);
         });
 
         item_number++;
@@ -103,13 +85,8 @@ public class Test extends JpizeApplication {
     float time = 0;
     @Override
     public void render() {
-        //System.out.println("FPS: " + Jpize.getFPS());
         Gl.clearColorBuffer();
         ctx.render();
-
-        // time += Jpize.getDT();
-        // for(int i = 0; i < 10; i++)
-        //     ctx.findByID("chainlink_" + i).bindings().bias().x = (Mathc.sin(time) * 0.5F + 0.5F);
 
         if(Key.T.pressed())
             ctx.findByID("scrollview").size().set(Constraint.pixel(Jpize.getX()), Constraint.pixel(Jpize.getY()));

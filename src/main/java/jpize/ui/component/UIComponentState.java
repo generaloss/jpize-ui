@@ -306,7 +306,7 @@ public class UIComponentState { // calculations class
 
     private void updateBackground() {
         // corners
-        final Constraint[] constraints = component.background().roundCornerConstraints();
+        final Constraint[] constraints = component.corners().constraints();
         for(int i = 0; i < 4; i++){
             round_corners[i] = constraints[i].getInPixels(false,
                 () -> size,
@@ -316,7 +316,7 @@ public class UIComponentState { // calculations class
         }
 
         // border
-        border_width = component.background().getBorderWidth().getInPixels(false,
+        border_width = component.getBorderWidth().getInPixels(false,
             () -> size,
             size::getX, size::getY,
             () -> (size.minComp() * 0.5F)

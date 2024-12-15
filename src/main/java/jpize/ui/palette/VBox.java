@@ -10,7 +10,6 @@ public class VBox extends UIComponent {
 
     public VBox(UIContext context) {
         super(context);
-        super.background().color().a = 0.2F; //! default color
     }
 
     public VBox add(UIComponent component) {
