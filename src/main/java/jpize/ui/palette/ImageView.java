@@ -2,46 +2,46 @@ package jpize.ui.palette;
 
 import jpize.gl.texture.Texture2D;
 import jpize.ui.component.*;
-import jpize.util.color.Color;
+import jpize.util.color.AbstractColor;
 import jpize.util.pixmap.Pixmap;
 import jpize.util.region.TextureRegion;
 
 public class ImageView extends UIComponent {
 
-    private final UIDrawableImage background;
+    private final UIDrawableImage image;
 
     public ImageView(UIContext context) {
         super(context);
-        this.background = new UIDrawableImage();
-        this.setBackground(background);
+        this.image = new UIDrawableImage();
+        this.setBackground(image);
     }
 
 
     public ImageView(UIContext context, TextureRegion textureRegion) {
         this(context);
-        background.setImage(textureRegion);
+        image.setImage(textureRegion);
     }
 
     public ImageView(UIContext context, Texture2D texture) {
         this(context);
-        background.setImage(texture);
+        image.setImage(texture);
     }
 
     public ImageView(UIContext context, Pixmap pixmap) {
         this(context);
-        background.setImage(pixmap);
+        image.setImage(pixmap);
     }
 
     public ImageView(UIContext context, String internalPath) {
         this(context);
-        background.setImage(internalPath);
+        image.setImage(internalPath);
     }
 
 
     public ImageView(UIContext context, TextureRegion textureRegion, float r, float g, float b, float a) {
         this(context);
-        background.setImage(textureRegion);
-        background.color().set(r, g, b, a);
+        image.setImage(textureRegion);
+        image.color().set(r, g, b, a);
     }
 
     public ImageView(UIContext context, TextureRegion textureRegion, float r, float g, float b) {
@@ -52,15 +52,15 @@ public class ImageView extends UIComponent {
         this(context, textureRegion, 1F, 1F, 1F, alpha);
     }
 
-    public ImageView(UIContext context, TextureRegion textureRegion, Color color) {
-        this(context, textureRegion, color.r, color.g, color.b, color.a);
+    public ImageView(UIContext context, TextureRegion textureRegion, AbstractColor color) {
+        this(context, textureRegion, color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
     }
 
 
     public ImageView(UIContext context, Texture2D texture, float r, float g, float b, float a) {
         this(context);
-        background.setImage(texture);
-        background.color().set(r, g, b, a);
+        image.setImage(texture);
+        image.color().set(r, g, b, a);
     }
 
     public ImageView(UIContext context, Texture2D texture, float r, float g, float b) {
@@ -71,15 +71,15 @@ public class ImageView extends UIComponent {
         this(context, texture, 1F, 1F, 1F, alpha);
     }
 
-    public ImageView(UIContext context, Texture2D texture, Color color) {
-        this(context, texture, color.r, color.g, color.b, color.a);
+    public ImageView(UIContext context, Texture2D texture, AbstractColor color) {
+        this(context, texture, color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
     }
 
 
     public ImageView(UIContext context, Pixmap pixmap, float r, float g, float b, float a) {
         this(context);
-        background.setImage(pixmap);
-        background.color().set(r, g, b, a);
+        image.setImage(pixmap);
+        image.color().set(r, g, b, a);
     }
 
     public ImageView(UIContext context, Pixmap pixmap, float r, float g, float b) {
@@ -90,15 +90,15 @@ public class ImageView extends UIComponent {
         this(context, pixmap, 1F, 1F, 1F, alpha);
     }
 
-    public ImageView(UIContext context, Pixmap pixmap, Color color) {
-        this(context, pixmap, color.r, color.g, color.b, color.a);
+    public ImageView(UIContext context, Pixmap pixmap, AbstractColor color) {
+        this(context, pixmap, color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
     }
 
 
     public ImageView(UIContext context, String internalPath, float r, float g, float b, float a) {
         this(context);
-        background.setImage(internalPath);
-        background.color().set(r, g, b, a);
+        image.setImage(internalPath);
+        image.color().set(r, g, b, a);
     }
 
     public ImageView(UIContext context, String internalPath, float r, float g, float b) {
@@ -109,27 +109,27 @@ public class ImageView extends UIComponent {
         this(context, internalPath, 1F, 1F, 1F, alpha);
     }
 
-    public ImageView(UIContext context, String internalPath, Color color) {
-        this(context, internalPath, color.r, color.g, color.b, color.a);
+    public ImageView(UIContext context, String internalPath, AbstractColor color) {
+        this(context, internalPath, color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
     }
 
 
     public ImageView(UIContext context, float r, float g, float b, float a) {
         this(context);
-        background.color().set(r, g, b, a);
+        image.color().set(r, g, b, a);
     }
 
     public ImageView(UIContext context, float r, float g, float b) {
         this(context, r, g, b, 1F);
     }
 
-    public ImageView(UIContext context, Color color) {
-        this(context, color.r, color.g, color.b, color.a);
+    public ImageView(UIContext context, AbstractColor color) {
+        this(context, color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
     }
 
 
     public UIDrawableImage background() {
-        return background;
+        return image;
     }
 
 }

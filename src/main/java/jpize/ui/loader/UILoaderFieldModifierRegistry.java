@@ -3,6 +3,8 @@ package jpize.ui.loader;
 import jpize.gl.texture.Texture2D;
 import jpize.ui.common.*;
 import jpize.ui.component.UIComponent;
+import jpize.ui.component.UIDrawableImage;
+import jpize.ui.component.UIDrawableNinePatch;
 import jpize.util.color.Color;
 import jpize.util.math.vector.Vec2f;
 import jpize.util.region.TextureRegion;
@@ -19,6 +21,8 @@ public class UILoaderFieldModifierRegistry {
     public UILoaderFieldModifierRegistry() {
         this.modifierMap = new HashMap<>();
 
+        this.register(UIDrawableNinePatch.class, this::modifyUIDrawableNinePatch);
+        this.register(UIDrawableImage.class, this::modifyUIDrawableImage);
         this.register(UICorners.class, this::modifyUICorners);
         this.register(UIInsets.class, this::modifyUIInsets);
         this.register(UIDimensions.class, this::modifyUIDimensions);
@@ -47,6 +51,60 @@ public class UILoaderFieldModifierRegistry {
         modifier.accept(loader, fieldObject, values);
     }
 
+
+    private void modifyUIDrawableNinePatch(UILoader loader, Object fieldObject, String values) {
+        // "image(restype:texture)"
+        // "image(restype:texture, r, g, b, a)"
+        final UIDrawableNinePatch drawableImage = (UIDrawableNinePatch) fieldObject;
+
+        if(!values.startsWith("image9(") || !values.endsWith(")"))
+            throw new IllegalArgumentException("Invalid image drawable format, allowed: '[image9(restype:texture), image9(restype:texture, r, g, b, a)]");
+        values = values.substring(7, values.length() - 1);
+
+        final String[] arguments = values.split(",");
+        for(int i = 0; i < arguments.length; i++)
+            arguments[i] = arguments[i].trim();
+
+        switch (arguments.length) {
+            case 1 -> drawableImage.setImage(UILoaderFieldSetterRegistry.loadTexture2D(loader, values));
+            case 5 -> {
+                drawableImage.setImage(UILoaderFieldSetterRegistry.loadTexture2D(loader, arguments[0]));
+                drawableImage.color().set(
+                        Float.parseFloat(arguments[1]),
+                        Float.parseFloat(arguments[2]),
+                        Float.parseFloat(arguments[3]),
+                        Float.parseFloat(arguments[4])
+                );
+            }
+        }
+    }
+
+    private void modifyUIDrawableImage(UILoader loader, Object fieldObject, String values) {
+        // "image(restype:texture)"
+        // "image(restype:texture, r, g, b, a)"
+        final UIDrawableImage drawableImage = (UIDrawableImage) fieldObject;
+
+        if(!values.startsWith("image(") || !values.endsWith(")"))
+            throw new IllegalArgumentException("Invalid image drawable format, allowed: '[image(restype:texture), image(restype:texture, r, g, b, a)]");
+        values = values.substring(6, values.length() - 1);
+
+        final String[] arguments = values.split(",");
+        for(int i = 0; i < arguments.length; i++)
+            arguments[i] = arguments[i].trim();
+
+        switch (arguments.length) {
+            case 1 -> drawableImage.setImage(UILoaderFieldSetterRegistry.loadTexture2D(loader, values));
+            case 5 -> {
+                drawableImage.setImage(UILoaderFieldSetterRegistry.loadTexture2D(loader, arguments[0]));
+                drawableImage.color().set(
+                        Float.parseFloat(arguments[1]),
+                        Float.parseFloat(arguments[2]),
+                        Float.parseFloat(arguments[3]),
+                        Float.parseFloat(arguments[4])
+                );
+            }
+        }
+    }
 
     private void modifyUICorners(UILoader loader, Object fieldObject, String values){
         // "constraint, constraint, ..."
@@ -85,7 +143,7 @@ public class UILoaderFieldModifierRegistry {
                 Constraint.parseConstraint(arguments[0]),
                 Constraint.parseConstraint(arguments[1])
             );
-            default -> throw new IllegalArgumentException("Illegal insets format, allowed: [all, (vertival)]");
+            default -> throw new IllegalArgumentException("Invalid insets format, allowed: [all, (vertival)]");
         }
     }
 
@@ -100,7 +158,7 @@ public class UILoaderFieldModifierRegistry {
         switch(arguments.length) {
             case 1 -> dimensions.set(Constraint.parseConstraint(arguments[0]));
             case 2 -> dimensions.set(Constraint.parseConstraint(arguments[0]), Constraint.parseConstraint(arguments[1]));
-            default -> throw new IllegalArgumentException("Illegal dimensions format, allowed: [xy, (x, y)]");
+            default -> throw new IllegalArgumentException("Invalid dimensions format, allowed: [xy, (x, y)]");
         }
     }
 
@@ -123,7 +181,7 @@ public class UILoaderFieldModifierRegistry {
             arguments[i] = arguments[i].trim();
 
         if(arguments.length > 2)
-            throw new IllegalArgumentException("Illegal binding format, allowed: [directory, (component_id, directory)]");
+            throw new IllegalArgumentException("Invalid binding format, allowed: [directory, (component_id, directory)]");
 
         if(arguments.length == 2){
             final UIComponent component = loader.context().findByID(arguments[0]);
@@ -153,27 +211,29 @@ public class UILoaderFieldModifierRegistry {
         switch(components.length) {
             case 1 -> vector.set(Float.parseFloat(components[0]));
             case 2 -> vector.set(Float.parseFloat(components[0]), Float.parseFloat(components[1]));
-            default -> throw new IllegalArgumentException("Illegal vector format, allowed: (x, y)");
+            default -> throw new IllegalArgumentException("Invalid vector format, allowed: (x, y)");
         }
     }
 
     private void modifyColor(UILoader loader, Object fieldObject, String values) {
-        // "#ffffff"            - lowercase or uppercase
-        // "#ffffffff"          - with alpha
+        // "#fff"               - rgb (short)
+        // "#ffff"              - rgba (short)
+        // "#ffffff"            - rgb
+        // "#ffffffff"          - rgba
         // "1.0, 1.0, 1.0, 1.0"
         // "1.0, 1.0, 1.0"
         // "1.0, 1.0"           - grayscale, alpha
         // "1.0"                - only set alpha channel
         final Color color = (Color) fieldObject;
         if(values.startsWith("#")) {
-            //! Color.set(values); !update engine
+            color.set(values);
         }else{
             final String[] channels = values.split(",");
             for(int i = 0; i < channels.length; i++)
                 channels[i] = channels[i].trim();
 
             switch(channels.length) {
-                case 1 -> color.setA(Float.parseFloat(channels[0])); //! setAlpha !update engine
+                case 1 -> color.setAlpha(Float.parseFloat(channels[0]));
                 case 2 -> {
                     final float grayscale = Float.parseFloat(channels[0]);
                     final float alpha = Float.parseFloat(channels[1]);
@@ -192,7 +252,7 @@ public class UILoaderFieldModifierRegistry {
                     final float alpha = Float.parseFloat(channels[3]);
                     color.set(red, green, blue, alpha);
                 }
-                default -> throw new IllegalArgumentException("Illegal color format, allowed: [(r, g, b, a), (r, g, b), (grayscale, alpha), alpha]");
+                default -> throw new IllegalArgumentException("Invalid color format, allowed: [(r, g, b, a), (r, g, b), (grayscale, alpha), alpha]");
             }
         }
     }
@@ -222,7 +282,7 @@ public class UILoaderFieldModifierRegistry {
             textureRegion.set(x, y, width, height);
 
         }else if(arguments.length != 1){
-            throw new IllegalArgumentException("Illegal texture region format, allowed: [restype:texture, (restype:texture, x, y, width, height)]");
+            throw new IllegalArgumentException("Invalid texture region format, allowed: [restype:texture, (restype:texture, x, y, width, height)]");
         }
     }
 
@@ -233,7 +293,7 @@ public class UILoaderFieldModifierRegistry {
         //      "url:link"
         final String[] split = values.split(":");
         if(split.length == 1)
-            throw new IllegalArgumentException("Illegal texture resource format, allowed: 'restype:texture'");
+            throw new IllegalArgumentException("Invalid texture resource format, allowed: 'restype:texture'");
 
         final String resourceType = split[0];
         final String path = values.replace(resourceType + ":", "");

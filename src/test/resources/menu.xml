@@ -1,11 +1,11 @@
 
 <VBox id="root"
-      background="internal:/background.png"
       size="match_parent"
       margin="50px" >
 
-    <ImageView id="9path_image"
-               bindings="center"
-               size="50%rel, 70%rel"/>
+    <NinePatchView id="9path_image"
+                   image="image9(internal:/button.9.png)"
+                   bindings="center"
+                   size="50%rel, 70%rel"/>
 
 </VBox>

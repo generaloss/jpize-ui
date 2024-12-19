@@ -3,6 +3,7 @@ package jpize.ui.loader;
 import jpize.gl.texture.Texture2D;
 import jpize.ui.component.UIDrawable;
 import jpize.ui.component.UIDrawableImage;
+import jpize.ui.component.UIDrawableNinePatch;
 import jpize.util.region.TextureRegion;
 
 import java.lang.reflect.Field;
@@ -55,26 +56,51 @@ public class UILoaderFieldSetterRegistry {
     private void setUIDrawable(UILoader loader, Object classObject, Field field, String values) throws IllegalAccessException {
         // "restype:texture"
         // "restype:texture, r, g, b, a"
-        final UIDrawableImage drawableImage = new UIDrawableImage();
+        final UIDrawable drawable;
+
+        if(!values.startsWith("image(") || values.startsWith("image9(") || !values.endsWith(")"))
+            throw new IllegalArgumentException("Invalid drawable format, allowed: '[image(restype:texture), image(restype:texture, r, g, b, a), image9(restype:texture), image9(restype:texture, r, g, b, a)]");
+
+        final String type = values.startsWith("image(") ? "image" : "image9";
+        values = values.substring(6, values.length() - 1);
 
         final String[] arguments = values.split(",");
         for(int i = 0; i < arguments.length; i++)
             arguments[i] = arguments[i].trim();
 
-        switch (arguments.length) {
-            case 1 -> drawableImage.setImage(loadTexture2D(loader, values));
-            case 5 -> {
-                drawableImage.setImage(loadTexture2D(loader, arguments[0]));
-                drawableImage.color().set(
-                    Float.parseFloat(arguments[1]),
-                    Float.parseFloat(arguments[2]),
-                    Float.parseFloat(arguments[3]),
-                    Float.parseFloat(arguments[4])
-                );
+        if(type.equals("image")){
+            final UIDrawableImage drawableImage = new UIDrawableImage();
+            drawable = drawableImage;
+            switch(arguments.length){
+                case 1 -> drawableImage.setImage(loadTexture2D(loader, values));
+                case 5 -> {
+                    drawableImage.setImage(loadTexture2D(loader, arguments[0]));
+                    drawableImage.color().set(
+                            Float.parseFloat(arguments[1]),
+                            Float.parseFloat(arguments[2]),
+                            Float.parseFloat(arguments[3]),
+                            Float.parseFloat(arguments[4])
+                    );
+                }
+            }
+        }else{
+            final UIDrawableNinePatch drawableNinePatch = new UIDrawableNinePatch();
+            drawable = drawableNinePatch;
+            switch(arguments.length){
+                case 1 -> drawableNinePatch.setImage(loadTexture2D(loader, values));
+                case 5 -> {
+                    drawableNinePatch.setImage(loadTexture2D(loader, arguments[0]));
+                    drawableNinePatch.color().set(
+                            Float.parseFloat(arguments[1]),
+                            Float.parseFloat(arguments[2]),
+                            Float.parseFloat(arguments[3]),
+                            Float.parseFloat(arguments[4])
+                    );
+                }
             }
         }
 
-        field.set(classObject, drawableImage);
+        field.set(classObject, drawable);
     }
 
     private void setTexture2D(UILoader loader, Object classObject, Field field, String values) throws IllegalAccessException {

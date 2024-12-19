@@ -15,10 +15,10 @@ public class UILoaderClassRegistry {
         this.classMap = new HashMap<>();
         this.aliasesMap = new HashMap<>();
 
-        this.register(ImageView.class,      "ImageView");
-        // this.register(NinePatchImage.class, "NinePatchImage");
-        this.register(ScrollView.class,     "ScrollView");
-        this.register(VBox.class,           "VBox");
+        this.register(ImageView.class,     "ImageView");
+        this.register(NinePatchView.class, "NinePatchView");
+        this.register(ScrollView.class,    "ScrollView");
+        this.register(VBox.class,          "VBox");
     }
 
     public UILoaderClassRegistry register(Class<? extends UIComponent> componentClass) {

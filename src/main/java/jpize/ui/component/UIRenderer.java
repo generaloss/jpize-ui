@@ -4,7 +4,7 @@ import jpize.gl.shader.Shader;
 import jpize.gl.tesselation.GlScissor;
 import jpize.util.Disposable;
 import jpize.util.camera.OrthographicCamera;
-import jpize.util.color.Color;
+import jpize.util.color.AbstractColor;
 import jpize.util.font.Font;
 import jpize.util.mesh.TextureBatch;
 import jpize.util.res.Resource;
@@ -89,7 +89,7 @@ public class UIRenderer implements Disposable {
             component.onRenderEnd(this);
     }
 
-    public void beginRect(float x, float y, float width, float height, float[] cornerRadius, float borderSize, Color borderColor){
+    public void beginRect(float x, float y, float width, float height, float[] cornerRadius, float borderSize, AbstractColor borderColor){
         shader.bind();
         shader.uniform("u_corner_radius", cornerRadius[0], cornerRadius[1], cornerRadius[2], cornerRadius[3]);
         shader.uniform("u_border_width", borderSize);
