@@ -39,6 +39,18 @@ public class UIBindInsets {
         return this;
     }
 
+    public UIBindInsets toCenterX() {
+        left.set(UIDir.LEFT);
+        right.set(UIDir.RIGHT);
+        return this;
+    }
+
+    public UIBindInsets toCenterY() {
+        top.set(UIDir.TOP);
+        bottom.set(UIDir.BOTTOM);
+        return this;
+    }
+
     public Vec2f bias() {
         return bias;
     }

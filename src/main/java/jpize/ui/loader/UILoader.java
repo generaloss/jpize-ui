@@ -57,7 +57,7 @@ public class UILoader {
         return resources;
     }
 
-    protected UIContext context() {
+    public UIContext context() {
         return context;
     }
 
