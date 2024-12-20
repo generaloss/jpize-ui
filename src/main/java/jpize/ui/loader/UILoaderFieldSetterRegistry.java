@@ -1,9 +1,10 @@
 package jpize.ui.loader;
 
 import jpize.gl.texture.Texture2D;
-import jpize.ui.component.UIDrawable;
-import jpize.ui.component.UIDrawableImage;
-import jpize.ui.component.UIDrawableNinePatch;
+import jpize.ui.common.UIDrawable;
+import jpize.ui.common.UIDrawableImage;
+import jpize.ui.common.UIDrawableNinePatch;
+import jpize.util.ninepatch.NinePatch;
 import jpize.util.region.TextureRegion;
 
 import java.lang.reflect.Field;
@@ -58,21 +59,23 @@ public class UILoaderFieldSetterRegistry {
         // "restype:texture, r, g, b, a"
         final UIDrawable drawable;
 
-        if(!values.startsWith("image(") || values.startsWith("image9(") || !values.endsWith(")"))
-            throw new IllegalArgumentException("Invalid drawable format, allowed: '[image(restype:texture), image(restype:texture, r, g, b, a), image9(restype:texture), image9(restype:texture, r, g, b, a)]");
+        if(!values.startsWith("image(") || values.startsWith("image9("))
+            throw new IllegalArgumentException("Invalid drawable format, allowed: '[image(restype:texture), image9(restype:texture)]");
 
         final String type = values.startsWith("image(") ? "image" : "image9";
-        values = values.substring(6, values.length() - 1);
+        values = values.substring(6);
 
         final String[] arguments = values.split(",");
         for(int i = 0; i < arguments.length; i++)
             arguments[i] = arguments[i].trim();
 
+        arguments[0] = arguments[0].substring(0, arguments[0].length() - 1);
+
         if(type.equals("image")){
             final UIDrawableImage drawableImage = new UIDrawableImage();
             drawable = drawableImage;
             switch(arguments.length){
-                case 1 -> drawableImage.setImage(loadTexture2D(loader, values));
+                case 1 -> drawableImage.setImage(loadTexture2D(loader, arguments[0]));
                 case 5 -> {
                     drawableImage.setImage(loadTexture2D(loader, arguments[0]));
                     drawableImage.color().set(
@@ -86,10 +89,12 @@ public class UILoaderFieldSetterRegistry {
         }else{
             final UIDrawableNinePatch drawableNinePatch = new UIDrawableNinePatch();
             drawable = drawableNinePatch;
+            final NinePatch ninepatch = new NinePatch();
+            drawableNinePatch.setNinepatch(ninepatch);
             switch(arguments.length){
-                case 1 -> drawableNinePatch.setImage(loadTexture2D(loader, values));
+                case 1 -> ninepatch.load(loadTexture2D(loader, values));
                 case 5 -> {
-                    drawableNinePatch.setImage(loadTexture2D(loader, arguments[0]));
+                    ninepatch.load(loadTexture2D(loader, arguments[0]));
                     drawableNinePatch.color().set(
                             Float.parseFloat(arguments[1]),
                             Float.parseFloat(arguments[2]),

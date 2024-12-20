@@ -1,6 +1,7 @@
-package jpize.ui.component;
+package jpize.ui.common;
 
 import jpize.gl.texture.Texture2D;
+import jpize.ui.component.UIRenderer;
 import jpize.util.color.Color;
 import jpize.util.mesh.TextureBatch;
 import jpize.util.pixmap.Pixmap;
@@ -15,6 +16,11 @@ public class UIDrawableImage implements UIDrawable {
         this.color = new Color();
     }
 
+    public UIDrawableImage(TextureRegion textureRegion) {
+        this();
+        this.image = textureRegion;
+    }
+
     public TextureRegion image() {
         return image;
     }
@@ -25,6 +31,7 @@ public class UIDrawableImage implements UIDrawable {
 
 
     public UIDrawableImage setImage(TextureRegion textureRegion) {
+        this.dispose();
         this.image = textureRegion;
         return this;
     }
@@ -51,6 +58,12 @@ public class UIDrawableImage implements UIDrawable {
         }else{
             batch.drawRect(x, y, width, height, color);
         }
+    }
+
+    @Override
+    public void dispose() {
+        if(image != null)
+            image.getTexture().dispose();
     }
 
 }

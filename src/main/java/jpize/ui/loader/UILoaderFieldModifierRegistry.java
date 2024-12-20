@@ -3,10 +3,11 @@ package jpize.ui.loader;
 import jpize.gl.texture.Texture2D;
 import jpize.ui.common.*;
 import jpize.ui.component.UIComponent;
-import jpize.ui.component.UIDrawableImage;
-import jpize.ui.component.UIDrawableNinePatch;
+import jpize.ui.common.UIDrawableImage;
+import jpize.ui.common.UIDrawableNinePatch;
 import jpize.util.color.Color;
 import jpize.util.math.vector.Vec2f;
+import jpize.util.ninepatch.NinePatch;
 import jpize.util.region.TextureRegion;
 import jpize.util.res.Resource;
 
@@ -57,18 +58,22 @@ public class UILoaderFieldModifierRegistry {
         // "image(restype:texture, r, g, b, a)"
         final UIDrawableNinePatch drawableImage = (UIDrawableNinePatch) fieldObject;
 
-        if(!values.startsWith("image9(") || !values.endsWith(")"))
-            throw new IllegalArgumentException("Invalid image drawable format, allowed: '[image9(restype:texture), image9(restype:texture, r, g, b, a)]");
-        values = values.substring(7, values.length() - 1);
+        if(!values.startsWith("image9("))
+            throw new IllegalArgumentException("Invalid image drawable format, allowed: '[image9(restype:texture), image9(restype:texture), r, g, b, a]");
+        values = values.substring(7);
 
         final String[] arguments = values.split(",");
         for(int i = 0; i < arguments.length; i++)
             arguments[i] = arguments[i].trim();
 
+        arguments[0] = arguments[0].substring(0, arguments[0].length() - 1);
+
+        final NinePatch ninepatch = new NinePatch();
+        drawableImage.setNinepatch(ninepatch);
         switch (arguments.length) {
-            case 1 -> drawableImage.setImage(UILoaderFieldSetterRegistry.loadTexture2D(loader, values));
+            case 1 -> ninepatch.load(UILoaderFieldSetterRegistry.loadTexture2D(loader, arguments[0]));
             case 5 -> {
-                drawableImage.setImage(UILoaderFieldSetterRegistry.loadTexture2D(loader, arguments[0]));
+                ninepatch.load(UILoaderFieldSetterRegistry.loadTexture2D(loader, arguments[0]));
                 drawableImage.color().set(
                         Float.parseFloat(arguments[1]),
                         Float.parseFloat(arguments[2]),

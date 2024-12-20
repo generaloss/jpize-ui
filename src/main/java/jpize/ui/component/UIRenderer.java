@@ -2,6 +2,7 @@ package jpize.ui.component;
 
 import jpize.gl.shader.Shader;
 import jpize.gl.tesselation.GlScissor;
+import jpize.ui.common.UIDrawable;
 import jpize.util.Disposable;
 import jpize.util.camera.OrthographicCamera;
 import jpize.util.color.AbstractColor;

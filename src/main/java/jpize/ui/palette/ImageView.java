@@ -1,6 +1,7 @@
 package jpize.ui.palette;
 
 import jpize.gl.texture.Texture2D;
+import jpize.ui.common.UIDrawableImage;
 import jpize.ui.component.*;
 import jpize.util.color.AbstractColor;
 import jpize.util.pixmap.Pixmap;

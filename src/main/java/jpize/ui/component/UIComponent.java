@@ -2,6 +2,7 @@ package jpize.ui.component;
 
 import jpize.ui.callback.UICallbacks;
 import jpize.ui.common.*;
+import jpize.util.Disposable;
 import jpize.util.color.Color;
 import jpize.util.math.vector.Vec2f;
 
@@ -9,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-public abstract class UIComponent {
+public abstract class UIComponent implements Disposable {
 
     private final UIContext context;
     private UIComponent parent;
@@ -216,6 +217,12 @@ public abstract class UIComponent {
         return callbacks;
     }
 
+
+    @Override
+    public void dispose() {
+        if(background != null)
+            background.dispose();
+    }
 
     // override in component
     protected void onUpdate() { }
