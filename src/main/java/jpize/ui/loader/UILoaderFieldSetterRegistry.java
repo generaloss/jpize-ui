@@ -2,9 +2,9 @@ package jpize.ui.loader;
 
 import jpize.gl.texture.Texture2D;
 import jpize.ui.common.UIDrawable;
-import jpize.ui.common.UIDrawableImage;
-import jpize.ui.common.UIDrawableNinePatch;
-import jpize.util.ninepatch.NinePatch;
+import jpize.ui.loader.mapper.UIMapperTexture2D;
+import jpize.ui.loader.mapper.UIMapperTextureRegion;
+import jpize.ui.loader.mapper.UIMapperUIDrawable;
 import jpize.util.region.TextureRegion;
 
 import java.lang.reflect.Field;
@@ -22,7 +22,6 @@ public class UILoaderFieldSetterRegistry {
         this.register(UIDrawable.class, this::setUIDrawable);
         this.register(Texture2D.class, this::setTexture2D);
         this.register(TextureRegion.class, this::setTextureRegion);
-
         this.register(byte.class, this::setByte);
         this.register(short.class, this::setShort);
         this.register(int.class, this::setInteger);
@@ -55,94 +54,16 @@ public class UILoaderFieldSetterRegistry {
 
 
     private void setUIDrawable(UILoader loader, Object classObject, Field field, String values) throws IllegalAccessException {
-        // "restype:texture"
-        // "restype:texture, r, g, b, a"
-        final UIDrawable drawable;
-
-        if(!values.startsWith("image(") || values.startsWith("image9("))
-            throw new IllegalArgumentException("Invalid drawable format, allowed: '[image(restype:texture), image9(restype:texture)]");
-
-        final String type = values.startsWith("image(") ? "image" : "image9";
-        values = values.substring(6);
-
-        final String[] arguments = values.split(",");
-        for(int i = 0; i < arguments.length; i++)
-            arguments[i] = arguments[i].trim();
-
-        arguments[0] = arguments[0].substring(0, arguments[0].length() - 1);
-
-        if(type.equals("image")){
-            final UIDrawableImage drawableImage = new UIDrawableImage();
-            drawable = drawableImage;
-            switch(arguments.length){
-                case 1 -> drawableImage.setImage(loadTexture2D(loader, arguments[0]));
-                case 5 -> {
-                    drawableImage.setImage(loadTexture2D(loader, arguments[0]));
-                    drawableImage.color().set(
-                            Float.parseFloat(arguments[1]),
-                            Float.parseFloat(arguments[2]),
-                            Float.parseFloat(arguments[3]),
-                            Float.parseFloat(arguments[4])
-                    );
-                }
-            }
-        }else{
-            final UIDrawableNinePatch drawableNinePatch = new UIDrawableNinePatch();
-            drawable = drawableNinePatch;
-            final NinePatch ninepatch = new NinePatch();
-            drawableNinePatch.setNinepatch(ninepatch);
-            switch(arguments.length){
-                case 1 -> ninepatch.load(loadTexture2D(loader, values));
-                case 5 -> {
-                    ninepatch.load(loadTexture2D(loader, arguments[0]));
-                    drawableNinePatch.color().set(
-                            Float.parseFloat(arguments[1]),
-                            Float.parseFloat(arguments[2]),
-                            Float.parseFloat(arguments[3]),
-                            Float.parseFloat(arguments[4])
-                    );
-                }
-            }
-        }
-
-        field.set(classObject, drawable);
+        field.set(classObject, UIMapperUIDrawable.load(loader, values));
     }
 
     private void setTexture2D(UILoader loader, Object classObject, Field field, String values) throws IllegalAccessException {
-        // "restype:texture"
-        final Texture2D texture2D = loadTexture2D(loader, values);
-        field.set(classObject, texture2D);
+        field.set(classObject, UIMapperTexture2D.load(loader, values));
     }
 
     private void setTextureRegion(UILoader loader, Object classObject, Field field, String values) throws IllegalAccessException {
-        // "restype:texture"
-        // "restype:texture, x, y, width, height" // in pixels
-        final String[] arguments = values.split(",");
-        for(int i = 0; i < arguments.length; i++)
-            arguments[i] = arguments[i].trim();
-        
-        final Texture2D texture2D = loadTexture2D(loader, arguments[0]);
-        final TextureRegion textureRegion = new TextureRegion(texture2D);
-        field.set(classObject, textureRegion);
-
-        if(arguments.length == 5) {
-            final int x = Integer.parseInt(arguments[1]);
-            final int y = Integer.parseInt(arguments[2]);
-            final int width = Integer.parseInt(arguments[3]);
-            final int height = Integer.parseInt(arguments[4]);
-            textureRegion.set(x, y, width, height);
-
-        }else if(arguments.length != 1){
-            throw new IllegalArgumentException("Illegal texture region format");
-        }
+        field.set(classObject, UIMapperTextureRegion.load(loader, values));
     }
-
-    protected static Texture2D loadTexture2D(UILoader loader, String values) {
-        final Texture2D texture2D = new Texture2D();
-        UILoaderFieldModifierRegistry.loadTexture2D(loader, texture2D, values);
-        return texture2D;
-    }
-
 
     private void setByte(UILoader loader, Object classObject, Field field, String values) throws IllegalAccessException {
         field.set(classObject, Byte.parseByte(values));
