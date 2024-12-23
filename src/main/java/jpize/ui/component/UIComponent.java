@@ -44,7 +44,7 @@ public abstract class UIComponent implements Disposable {
         this.margin = new UIInsets();
         this.padding = new UIInsets();
         this.corners = new UICorners();
-        this.borders_width = Constraint.pixel(2);
+        this.borders_width = Constraint.pixel(0);
         this.borderColor = new Color(0.1, 0.11, 0.15); //! default border color
         this.visibility = true;
         this.hoverable = true;

@@ -116,7 +116,7 @@ public class UIComponentState { // calculations class
             this.updateSizeY(height);
             size.x = width.asNumber().getValue() * size.y;
         }else{
-            size.x = width.getInPixels(true, () -> parent_size, size::getX, size::getY, () -> {
+            size.x = width.getInPixels(true, parent_size::getX, parent_size::getY, size::getX, size::getY, () -> {
                 this.calculateContentSize();
                 return content_size.x;
             });
@@ -134,7 +134,7 @@ public class UIComponentState { // calculations class
         if(height.isAspect()){
             size.y = height.asNumber().getValue() * size.x;
         }else{
-            size.y = height.getInPixels(false, () -> parent_size, size::getX, size::getY, () -> {
+            size.y = height.getInPixels(false, parent_size::getX, parent_size::getY, size::getX, size::getY, () -> {
                 this.calculateContentSize();
                 return content_size.y;
             });
@@ -187,15 +187,15 @@ public class UIComponentState { // calculations class
 
 
     private void updateMarginAndPadding() {
-        padding.top    = component.padding().top()   .getInPixels(false, () -> parent_size, size::getX, size::getY, () -> 0F);
-        padding.left   = component.padding().left()  .getInPixels(true , () -> parent_size, size::getX, size::getY, () -> 0F);
-        padding.bottom = component.padding().bottom().getInPixels(false, () -> parent_size, size::getX, size::getY, () -> 0F);
-        padding.right  = component.padding().right() .getInPixels(true , () -> parent_size, size::getX, size::getY, () -> 0F);
+        padding.top    = component.padding().top()   .getInPixels(false, parent_size::getX, parent_size::getY, size::getX, size::getY, () -> 0F);
+        padding.left   = component.padding().left()  .getInPixels(true , parent_size::getX, parent_size::getY, size::getX, size::getY, () -> 0F);
+        padding.bottom = component.padding().bottom().getInPixels(false, parent_size::getX, parent_size::getY, size::getX, size::getY, () -> 0F);
+        padding.right  = component.padding().right() .getInPixels(true , parent_size::getX, parent_size::getY, size::getX, size::getY, () -> 0F);
 
-        margin.top    = component.margin().top()   .getInPixels(false, () -> parent_size, size::getX, size::getY, () -> 0F);
-        margin.left   = component.margin().left()  .getInPixels(true , () -> parent_size, size::getX, size::getY, () -> 0F);
-        margin.bottom = component.margin().bottom().getInPixels(false, () -> parent_size, size::getX, size::getY, () -> 0F);
-        margin.right  = component.margin().right() .getInPixels(true , () -> parent_size, size::getX, size::getY, () -> 0F);
+        margin.top    = component.margin().top()   .getInPixels(false, parent_size::getX, parent_size::getY, size::getX, size::getY, () -> 0F);
+        margin.left   = component.margin().left()  .getInPixels(true , parent_size::getX, parent_size::getY, size::getX, size::getY, () -> 0F);
+        margin.bottom = component.margin().bottom().getInPixels(false, parent_size::getX, parent_size::getY, size::getX, size::getY, () -> 0F);
+        margin.right  = component.margin().right() .getInPixels(true , parent_size::getX, parent_size::getY, size::getX, size::getY, () -> 0F);
 
         size_paddinged.set(size).sub(padding.left, padding.bottom).sub(padding.right, padding.top);
     }
@@ -309,7 +309,7 @@ public class UIComponentState { // calculations class
         final Constraint[] constraints = component.corners().constraints();
         for(int i = 0; i < 4; i++){
             round_corners[i] = constraints[i].getInPixels(false,
-                () -> size,
+                size::getX, size::getY,
                 size::getX, size::getY,
                 () -> (size.minComp() * 0.5F)
             );
@@ -317,7 +317,7 @@ public class UIComponentState { // calculations class
 
         // border
         border_width = component.getBorderWidth().getInPixels(false,
-            () -> size,
+            size::getX, size::getY,
             size::getX, size::getY,
             () -> (size.minComp() * 0.5F)
         );

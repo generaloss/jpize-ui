@@ -1,8 +1,6 @@
 package jpize.ui.common;
 
 import jpize.util.function.FloatSupplier;
-import jpize.util.math.vector.Vec2f;
-import java.util.function.Supplier;
 
 public class Constraint {
 
@@ -48,20 +46,20 @@ public class Constraint {
     }
 
 
-    public float getInPixels(boolean isX, Supplier<Vec2f> parentSize, FloatSupplier selfWidth, FloatSupplier selfHeight, FloatSupplier contentSize) {
+    public float getInPixels(boolean isX, FloatSupplier parentWidth, FloatSupplier parentHeight, FloatSupplier selfWidth, FloatSupplier selfHeight, FloatSupplier contentSize) {
         if(this.isNumber()){
             final ConstraintNumber number = this.asNumber();
             return switch(number.getType()) {
                 case PIXEL              -> number.getValue();
-                case RELATIVE_AUTO      -> number.getValue() * (isX ? parentSize.get().x : parentSize.get().y);
-                case RELATIVE_TO_WIDTH  -> number.getValue() * parentSize.get().x;
-                case RELATIVE_TO_HEIGHT -> number.getValue() * parentSize.get().y;
+                case RELATIVE_AUTO      -> number.getValue() * (isX ? parentWidth.getAsFloat() : parentHeight.getAsFloat());
+                case RELATIVE_TO_WIDTH  -> number.getValue() * parentWidth.getAsFloat();
+                case RELATIVE_TO_HEIGHT -> number.getValue() * parentHeight.getAsFloat();
                 case ASPECT             -> number.getValue() * (isX ? selfHeight.getAsFloat() : selfWidth.getAsFloat());
             };
         }else{
             final ConstraintFlag flag = this.asFlag();
             return switch(flag.getType()) {
-                case MATCH_PARENT -> isX ? parentSize.get().x : parentSize.get().y;
+                case MATCH_PARENT -> isX ? parentWidth.getAsFloat() : parentHeight.getAsFloat();
                 case WRAP_CONTENT -> contentSize.getAsFloat();
             };
         }

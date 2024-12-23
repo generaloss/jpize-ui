@@ -1,22 +1,26 @@
 
 <VBox id="root"
-      background="image(internal:/background.png)"
-      size="42%asp, match_parent"
+      size="61%asp, match_parent"
       bindings="center"
       margin="50px" >
 
-    <NinePatchView id="9path_image"
+    <NinePatchView id="9path_image1"
                    bindings="center"
                    bias="0.5, 0.7"
-                   image="ninepatch(internal:/button.9.png, 5, 5; #f00a)"
-                   size="match_parent, 10%rel"/>
 
-    <NinePatchView id="9path_image"
-                   image="ninepatch(internal:/button.9.png, 5, 5; #0f0a)"
-                   size="match_parent, 10%rel"/>
+                   image="ninepatch(internal:/button.9.png, 0.5%relh, 0.5%relh; #faad)"
+                   size="match_parent, 10%rel" />
 
-    <NinePatchView id="9path_image"
-                   image="ninepatch(internal:/button.9.png, 5, 5; #00fa)"
-                   size="match_parent, 10%rel"/>
+    <NinePatchView id="9path_image2"
+                   image="ninepatch(internal:/button.9.png, 0.5%relh, 0.5%relh; #afad)"
+                   size="match_parent, 10%rel" />
+
+    <NinePatchView id="9path_image3"
+                   image="ninepatch(internal:/button.9.png, 0.5%relh, 0.5%relh; #aafd)"
+                   size="match_parent, 10%rel" />
+
+    <NinePatchView id="9path_image4"
+                   image="ninepatch(internal:/button.9.png, 0.5%relh, 0.5%relh; #fafd)"
+                   size="match_parent, 10%rel" />
 
 </VBox>

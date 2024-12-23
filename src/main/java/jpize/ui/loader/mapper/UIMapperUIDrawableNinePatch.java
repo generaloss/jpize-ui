@@ -1,5 +1,6 @@
 package jpize.ui.loader.mapper;
 
+import jpize.ui.common.Constraint;
 import jpize.ui.common.UIDrawableNinePatch;
 import jpize.ui.loader.UILoader;
 import jpize.util.ninepatch.NinePatch;
@@ -42,9 +43,9 @@ public class UIMapperUIDrawableNinePatch {
             UIMapperColor.modify(loader, drawableImage.color(), args[1]);
 
         if(ninepatchArgs.length >= 3){
-            final float scaleX = Float.parseFloat(ninepatchArgs[1]);
-            final float scaleY = Float.parseFloat(ninepatchArgs[2]);
-            ninePatch.setScale(scaleX, scaleY);
+            final Constraint scaleX = Constraint.parseConstraint(ninepatchArgs[1]);
+            final Constraint scaleY = Constraint.parseConstraint(ninepatchArgs[2]);
+            drawableImage.scale().set(scaleX, scaleY);
         }
         if(ninepatchArgs.length == 5){
             final StretchMode stretchModeX = StretchMode.valueOf(ninepatchArgs[3].toUpperCase());
